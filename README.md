@@ -1,8 +1,9 @@
-# Calendar viewer (888calendar_viewer)
+# Calendar viewer
 
 ## Description
 
-Calendar viewer is a  MCP Server implementation to read a personal Google Calendar and get the events within a date range.
+**Calendar viewer** is a  *MCP Server implementation* to read a personal Google Calendar and get the events within a date range.
+
 
 ## Prerequisites
 
