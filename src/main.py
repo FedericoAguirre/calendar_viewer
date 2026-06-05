@@ -3,7 +3,7 @@ import csv
 from datetime import datetime, timedelta
 import pytz
 
-from calendar_api import fetch_events
+from src.calendar_api import fetch_events
 
 logging.basicConfig(
     level=logging.INFO,

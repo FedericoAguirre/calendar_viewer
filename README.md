@@ -13,22 +13,61 @@
 ## Startup project
 
 1. Clone the repository:
-   ```sh
-   git clone <repo-url>
-   cd calendar_viewer
-   ```
+```sh
+git clone <repo-url>
+cd calendar_viewer
+```
 
 2. Sync the project dependencies:
-   ```sh
-   uv sync
-   ```
+```sh
+uv sync
+```
 
 3. Place your `credentials.json` file in the project root.
 
 4. Run the project (entry point: `main.py`):
-   ```sh
-   uv run python main.py
-   ```
+```sh
+uv run python main.py
+```
+
+## MCP Server implementation
+
+The MCP server lives in [`src/mcp_server.py`](src/mcp_server.py) and is built with the [FastMCP](https://github.com/modelcontextprotocol/python-sdk) library from the official [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk). It exposes a single tool:
+
+- **`get_availability`** — Given a date range (and optional hour overrides), it fetches Google Calendar events via [`calendar_api.py`](src/calendar_api.py) and returns available 1-hour free time slots.
+
+The server runs over **stdio transport**, making it compatible with any MCP client (including **opencode**).
+
+## Startup MCP Server
+
+```sh
+uv run python src/mcp_server.py
+```
+
+The server will start on **stdio** and wait for MCP protocol messages from the client.
+
+## MCP Server configuration
+
+To use this MCP server with the **opencode** agent, add the following entry to your opencode MCP configuration file (`~/.config/opencode/mcp.json` or project-local `.opencode/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "calendar-availability": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/path/to/calendar_viewer",
+        "python",
+        "src/mcp_server.py"
+      ]
+    }
+  }
+}
+```
+
+Replace `/path/to/calendar_viewer` with the actual absolute path to this project. Once configured, the **opencode** agent will be able to call the `get_availability` tool to check calendar availability.
 
 ## Troubleshooting
 
