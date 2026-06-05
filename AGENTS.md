@@ -3,7 +3,7 @@
 ## Project structure
 
 ```
-main.py              — CLI: exports this week's events to CSV
+src/main.py          — CLI: exports this week's events to CSV
 src/mcp_server.py    — MCP server (FastMCP, stdio transport)
 src/calendar_api.py  — shared Google Calendar auth + fetch logic
 ```
@@ -13,7 +13,7 @@ src/calendar_api.py  — shared Google Calendar auth + fetch logic
 | What | Command |
 |---|---|
 | Install deps | `uv sync` |
-| Run CSV export | `uv run python main.py` |
+| Run CSV export | `uv run python src/main.py` |
 | Start MCP server | `uv run python src/mcp_server.py` |
 
 Always use `uv run python ...` — the project requires `uv` and Python >=3.14 (see `.python-version`).
