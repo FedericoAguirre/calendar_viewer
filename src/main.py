@@ -44,7 +44,11 @@ def convert_to_csv(events: list[dict], filename: str = "calendar_events.csv"):
     log.info(f"Export successful! Data saved to '{filename}'.")
 
 
-if __name__ == "__main__":
+def main():
     events = fetch_events(week_start, week_end)
     if events:
         convert_to_csv(events)
+
+
+if __name__ == "__main__":
+    main()

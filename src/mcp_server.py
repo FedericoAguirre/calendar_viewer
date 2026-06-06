@@ -108,6 +108,10 @@ def get_availability(
     return "\n".join(result_lines)
 
 
-if __name__ == "__main__":
+def main():
     logging.basicConfig(level=logging.INFO)
     mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

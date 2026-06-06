@@ -2,15 +2,19 @@
 
 ## Description
 
-**Calendar viewer** is a  *MCP Server implementation* to read a personal Google Calendar and get the events within a date range.
+**Calendar viewer** is a Python package (managed with [uv](https://docs.astral.sh/uv/)) that reads a personal Google Calendar and exposes events through a CLI and an MCP server.
 
+It provides two entry points:
+
+- **`calendar-export`** — CLI that exports the next working week's events to CSV.
+- **`calendar-mcp`** — MCP server (stdio transport) with a `get_availability` tool that returns free 1-hour time slots within a date range.
 
 ## Prerequisites
 
-- [uv](https://docs.astral.sh/uv/) - To manage this Python project.
-- [credentials.json](https://developers.google.com/workspace/guides/create-credentials) file - To authenticate to Google using email and password.
+- [uv](https://docs.astral.sh/uv/) — Python project manager.
+- `credentials.json` — Google OAuth credentials file. Follow the [Google Workspace guide](https://developers.google.com/workspace/guides/create-credentials) to create one.
 
-## Startup project
+## Setup
 
 1. Clone the repository:
 ```sh
@@ -18,37 +22,40 @@ git clone <repo-url>
 cd calendar_viewer
 ```
 
-2. Sync the project dependencies:
+2. Sync dependencies:
 ```sh
 uv sync
 ```
 
 3. Place your `credentials.json` file in the project root.
 
-4. Run the project (entry point: `main.py`):
-```sh
-uv run python main.py
-```
+## Usage
 
-## MCP Server implementation
-
-The MCP server lives in [`src/mcp_server.py`](src/mcp_server.py) and is built with the [FastMCP](https://github.com/modelcontextprotocol/python-sdk) library from the official [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk). It exposes a single tool:
-
-- **`get_availability`** — Given a date range (and optional hour overrides), it fetches Google Calendar events via [`calendar_api.py`](src/calendar_api.py) and returns available 1-hour free time slots.
-
-The server runs over **stdio transport**, making it compatible with any MCP client (including **opencode**).
-
-## Startup MCP Server
+### Export week's events to CSV
 
 ```sh
-uv run python src/mcp_server.py
+uv run calendar-export
 ```
 
-The server will start on **stdio** and wait for MCP protocol messages from the client.
+### Start the MCP server
+
+```sh
+uv run calendar-mcp
+```
+
+The server starts on **stdio** and waits for MCP protocol messages from the client.
+
+## Package
+
+This project is a proper `uv` package. Build it with:
+
+```sh
+uv build
+```
 
 ## MCP Server configuration
 
-To use this MCP server with the **opencode** agent, add the following entry to your opencode MCP configuration file (`~/.config/opencode/mcp.json` or project-local `.opencode/mcp.json`):
+To use the MCP server with **opencode**, add this to `~/.config/opencode/mcp.json` or `.opencode/mcp.json`:
 
 ```json
 {
@@ -59,22 +66,21 @@ To use this MCP server with the **opencode** agent, add the following entry to y
         "run",
         "--directory",
         "/path/to/calendar_viewer",
-        "python",
-        "src/mcp_server.py"
+        "calendar-mcp"
       ]
     }
   }
 }
 ```
 
-Replace `/path/to/calendar_viewer` with the actual absolute path to this project. Once configured, the **opencode** agent will be able to call the `get_availability` tool to check calendar availability.
+Replace `/path/to/calendar_viewer` with the absolute path to the project.
 
 ## Troubleshooting
 
 ### Google Authentication
 
 **`Error 400: invalid_scope`**
-The OAuth scope URL is incorrect. Ensure `SCOPES` in `main.py` uses a valid Google scope, e.g.:
+The OAuth scope URL is incorrect. Ensure `SCOPES` in `src/calendar_api.py` uses a valid Google scope, e.g.:
 ```python
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 ```

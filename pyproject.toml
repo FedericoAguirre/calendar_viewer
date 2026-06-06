@@ -1,7 +1,7 @@
 [project]
 name = "calendar-viewer"
 version = "0.1.0"
-description = "Add your description here"
+description = "CLI and MCP server for reading Google Calendar events"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -11,3 +11,17 @@ dependencies = [
     "mcp>=1.0.0",
     "pytz>=2026.2",
 ]
+
+[project.scripts]
+calendar-export = "main:main"
+calendar-mcp = "mcp_server:main"
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools]
+py-modules = ["calendar_api", "main", "mcp_server"]
